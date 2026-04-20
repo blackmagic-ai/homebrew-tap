@@ -1,14 +1,14 @@
 cask "blackmagic-ai" do
-  version "0.2.7"
+  version "0.2.9"
 
   on_arm do
-    sha256 "7aa2d781899c0fa216cd6fbd08435eaee7b09f60ae26d8647b6389ff950aa2a2"
+    sha256 "8fb8d49dbf5bb2caacfaa2497f72580cba302795702808a7a434457706ab25d0"
     url "https://pub-d259d1d2737843cb8bcb2b1ff98fc9c6.r2.dev/blackmagic-desktop/BlackMagic%20AI-#{version}-arm64.dmg",
         verified: "pub-d259d1d2737843cb8bcb2b1ff98fc9c6.r2.dev/blackmagic-desktop/"
   end
 
   on_intel do
-    sha256 "f8b062b7fb6382078c96e34272c0c25cd2ac77fed81963a1c4eee96c57de7479"
+    sha256 "44b2979cb0ce65063e8e4544ecaa6f7c77ca247fb0e574766e992b9af200a128"
     url "https://pub-d259d1d2737843cb8bcb2b1ff98fc9c6.r2.dev/blackmagic-desktop/BlackMagic%20AI-#{version}.dmg",
         verified: "pub-d259d1d2737843cb8bcb2b1ff98fc9c6.r2.dev/blackmagic-desktop/"
   end
@@ -19,6 +19,10 @@ cask "blackmagic-ai" do
 
   app "BlackMagic AI.app"
 
+  # Belt-and-suspenders: strip quarantine + any lingering xattrs on the
+  # installed app. Our build re-signs ad-hoc in afterPack, which resolves
+  # the "app is damaged" Gatekeeper error caused by Electron's default
+  # linker-signed stub having a mismatched identifier.
   postflight do
     system_command "/usr/bin/xattr",
                    args: ["-cr", "#{appdir}/BlackMagic AI.app"],
